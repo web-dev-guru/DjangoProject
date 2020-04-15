@@ -1,0 +1,43 @@
+{% extends "order/base.html" %}
+{% block content %}
+<div class="layout_container">
+    <div>
+        <table>
+            <tbody>
+               <tr>
+                   <td> Order Number</td>
+                   <td> {{orderDetail.order_num}}</td>
+                </tr>
+                <tr>
+                   <td> Customer Name</td>
+                   <td> {{orderDetail.customer_name}}</td>
+                </tr>
+            </tbody>
+    </table>
+
+    </div>
+    <div class="split_space">
+        <table border="1" style="width=500px">
+            <thead>
+               <tr>
+                   <td align="center"><label id="customerlable" for="customerlable">Dish</label></td>
+                    <td align="center"><label id="qtylable" for="qtylable">QTY</label></td>
+                    <td align="center"><label id="spicylable" for="spicylable">Spicy</label></td>
+                </tr>
+            </thead>
+
+
+                 {% for line in orderDetail.orderline_set.all %}
+                   <tr>
+                       <td>{{line.dish.dish_name}}</td>
+                       <td>{{line.qty}}</td>
+                       <td>{{line.spicy.spicy_name}}</td>
+                   </tr>
+                 {% endfor %}
+
+
+
+        </table>
+    </div>
+</div>
+{% endblock %}

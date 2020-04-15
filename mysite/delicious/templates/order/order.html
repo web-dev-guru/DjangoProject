@@ -1,0 +1,76 @@
+{% extends "order/base.html" %}
+{% block content %}
+<div class="layout_container">
+    <table>
+        <tr>
+            <td>
+                <span><label id="cnlable" for="customerName">Customer Name:</label></span>
+            </td>
+
+            <td>
+                <span><input type="text" id="customerName" name="customerName"></span>
+            </td>
+            <td>
+                <div>
+                    <button id="addNewLine" type="button">Add</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <div class="split_space"></div>
+    <table id="order-detail">
+       <thead>
+            <tr>
+               <td align="center"><label id="customerlable" for="customerlable">Dish</label></td>
+                <td align="center"><label id="qtylable" for="qtylable">QTY</label></td>
+                <td align="center"><label id="spicylable" for="spicylable">Spicy</label></td>
+            </tr>
+       </thead>
+        <tbody>
+        <tr class="orderline">
+            <td>
+                <div>
+                    <select name="dish" class="dish" >
+
+                            {% for d in dish %}
+                            <option> {{d.dish_name}}</option>
+                            {% endfor %}
+
+                    </select>
+                </div>
+            </td>
+            <td style="padding-left:30px">
+                <input type="text"  class="qyt" name="qyt" style="width:50px">
+            </td>
+            <td style="padding-left:30px">
+               <div class="widget">
+                    {% for s in spicy %}
+                           <label for="radio0-{{s.id}}">{{s.spicy_name}}</label>
+                            <input type="radio" value="{{s.spicy_name}}" name="radio1" id="radio0-{{s.id}}">
+                    {% endfor %}
+               </div>
+            </td>
+        </tr>
+
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td></td>
+                <td align="right">
+                  <div class="">
+                    <button id="createButton" type="button">CheckOut</button>
+                  </div>
+              </td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div>
+        <a  arget="_blank"></a>
+    </div>
+</div>
+
+
+
+{% endblock %}

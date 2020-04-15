@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    {% block style %}
+    <style>
+        body {background-color: powderblue;
+              margin: 20px;
+              padding: 20px;
+              font: 15px Arial, sans-serif;}
+        td {padding-left:10px}
+        .large_title{font: 30px Arial, sans-serif; font-weight:bold;color:#FF0000; padding:20px}
+        .footer{font: 12px Arial, sans-serif; padding:20px}
+        .split_space{padding:20px}
+        .layout_container { padding-left:20px}
+        </style>
+    {% endblock style %}
+    <title>Order Food</title>
+</head>
+<body>
+<div class="large_title">Friday Night Delicious</div>
+{% block content %}
+{% endblock %}
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{% block javascript %}
+<script type="text/javascript">
+		$(function(){
+            $( ".dish" )
+                  .selectmenu()
+                  .selectmenu( "menuWidget" )
+                   .addClass( "overflow" );
+
+                 $( "#createButton" ).button();
+                  $( "#addNewLine" ).button();
+                   $( "#addNewLine" ).button();
+                    $( "#apply" ).button();
+
+                 $( "input[type=radio]" ).checkboxradio();
+
+
+
+                $("#addNewLine").click(function(){
+                   let trindex=$("#order-detail > tbody tr").length;
+                   trindex=trindex+1;
+                   let radioname='radio'+trindex;
+                   console.log(radioname);
+                   let markup="<tr class='orderline'><td><div><select name='dish' class='dish' >{% for d in dish %}<option> {{d.dish_name}}</option>{% endfor %}</select></div></td><td style='padding-left:30px'><input type='text'  class='qyt' name='qyt' style='width:50px'></td><td style='padding-left:30px'> <div class='widget'>{% for s in spicy %}<label for="+radioname+"-{{s.id}}>{{s.spicy_name}}</label><input type='radio' value='{{s.spicy_name}}' id="+radioname+"-{{s.id}} name="+radioname+">{% endfor %}</div> </td></tr>"
+                    $("#order-detail > tbody:last").append(markup)
+
+                    $( ".dish" )
+                      .selectmenu()
+                      .selectmenu( "menuWidget" )
+                      .addClass( "overflow" );
+
+                     $( "input[type=radio]" ).checkboxradio();
+                })
+
+                $('#createButton').click(function(){
+                    var cn=$("#customerName").val();
+                    //console.log(cn);
+                    //console.log($("#dish").val());
+                    //console.log($( "input[type=radio][name=radio1]:checked" ).val())
+                    //var radioValue = $("input[type=radio]:checked").val();
+                    //console.log(radioValue)
+                    orderArray=[]
+                    $(".orderline").each(function(index){
+                        orderObj=new Object;
+                        orderObj.dish=$(this).find(".dish").val()
+                        orderObj.qty=$(this).find(".qyt").val()
+                        orderObj.spicy=$(this).find("input[type=radio]:checked").val()
+                        orderArray.push(orderObj);
+                    })
+
+                    orderData=new Object();
+                    orderData.customer=cn
+                    orderData.orderLine=orderArray;
+
+                    jsonStr=JSON.stringify(orderData);
+                    console.log(jsonStr)
+                    var token = '{{csrf_token}}';
+                    $.ajax({
+                        headers: { "X-CSRFToken": token },
+                        type:"POST",
+                        url: "/delicious/createOrder",
+                        data:jsonStr,
+                        success: function( data )
+                        {
+                            new_url=data.order_num+'/detail'
+                            $('a').html(data.order_num)
+                            $('a').attr("href", new_url)
+                        }
+				    })
+                })
+            })
+
+    </script>
+{% endblock javascript %}
+{% include "order/footer.html" %}
+</body>
+</html>
